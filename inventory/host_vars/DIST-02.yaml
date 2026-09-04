@@ -1,0 +1,20 @@
+---
+hsrp_track_interface: ""
+hsrp_track_decrement: 0
+
+l3_interfaces:
+  - name: Vlan10
+    ip: "172.16.10.3 255.255.255.0"
+    hsrp_group: 10
+    hsrp_vip: "172.16.10.1"
+    hsrp_priority: 95
+    hsrp_preempt: true
+  - name: Vlan20
+    ip: "172.16.20.3 255.255.255.0"
+    hsrp_group: 20
+    hsrp_vip: "172.16.20.1"
+    hsrp_priority: 95
+    hsrp_preempt: true
+  - name: GigabitEthernet0/1
+    ip: "10.0.0.5 255.255.255.252"
+    is_routed_port: true

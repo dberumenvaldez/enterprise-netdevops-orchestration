@@ -1,0 +1,26 @@
+---
+all:
+  children:
+    cisco_switches:
+      hosts:
+        DIST-01:
+          ansible_host: 10.10.10.2
+        DIST-02:
+          ansible_host: 10.10.10.3
+        ACC-01:
+          ansible_host: 10.10.10.11
+        ACC-02:
+          ansible_host: 10.10.10.12  
+    firewalls:
+      hosts:
+        FW-EDGE:
+          ansible_host: 10.10.10.1
+      vars:
+        ansible_user: admin
+        ansible_password: admin
+        ansible_network_os: fortinet.fortios.fortios
+        ansible_connection: httpapi
+        ansible_httpapi_use_ssl: yes
+        ansible_httpapi_validate_certs: no
+        ansible_httpapi_port: 443
+        fortios_access_token: 737H1r4z7zGsqrpNmf50Nqycfd5ymw   

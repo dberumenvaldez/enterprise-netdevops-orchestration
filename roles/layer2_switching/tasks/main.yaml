@@ -1,0 +1,44 @@
+---
+- name: Configure Vlan Data Base in all switches
+  cisco.ios.ios_vlans:
+    config: "{{ campus_vlans }}"
+    state: merged
+  register: vlan_result
+
+- name: Show status injection 
+  ansible.builtin.debug:
+    msg: "New Vlans add on Data Base"
+  when: vlan_result.changed
+
+- name: Configure trunk links 802.1Q
+  cisco.ios.ios_l2_interfaces:
+    config:
+      - name: "{{ item }}"
+        mode: trunk
+        trunk: 
+          encapsulation: dot1q
+          native_vlan: 99
+          allowed_vlans: 10,20,99
+    state: merged
+  loop: "{{ trunk_interfaces[inventory_hostname] | default([]) }}"
+
+- name: Configure Rapid-PVST+
+  cisco.ios.ios_config:
+    lines:
+      - spanning-tree mode rapid-pvst
+
+- name: Stablish DIST-01 like ROOT Brigdge
+  cisco.ios.ios_config:
+    lines:
+      - spanning-tree vlan 10,20,99 root primary
+  when: inventory_hostname == 'DIST-01'  
+
+- name: Stablish DIST-01 like ROOT Brigdge
+  cisco.ios.ios_config:
+    lines:
+      - spanning-tree vlan 10,20,99 root secondary
+  when: inventory_hostname == 'DIST-02'
+
+- name: Save running-config on startup-config
+  cisco.ios.ios_config:
+    save_when: modified

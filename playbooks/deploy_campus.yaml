@@ -1,0 +1,13 @@
+---
+- name: Deploy L2/L3 Infraestructure
+  hosts: cisco_switches
+  gather_facts: no
+  roles:
+    - layer2_switching
+    - layer3_routing
+
+- name: Deploy perimeter and routing
+  hosts: firewalls
+  gather_facts: no
+  roles:
+    - firewall_edge

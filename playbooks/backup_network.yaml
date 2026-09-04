@@ -1,0 +1,45 @@
+---
+- name: Switches Cisco IOS Backup
+  hosts: cisco_switches
+  gather_facts: no
+  tasks:
+    - name: Make dir for Cisco backups
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../backups/cisco"
+        state: directory
+      run_once: true
+      delegate_to: localhost
+    
+    - name: Save running-Config
+      cisco.ios.ios_config:
+        backup: yes
+        backup_options:
+          dir_path: "{{ playbook_dir }}/../backups/cisco"
+          filename: "{{ inventory_hostname }}.cfg"
+
+- name: Firewall FortiGate Backup
+  hosts: firewalls
+  gather_facts: no
+  tasks:
+    - name: Make dir Fortinet backups
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../backups/fortinet"
+        state: directory
+      run_once: true
+      delegate_to: localhost
+
+    - name: Get config global via REST API
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}/api/v2/monitor/system/config/backup?scope=global"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ fortios_access_token }}"
+        return_content: yes
+      register: fw_backup
+      delegate_to: localhost
+
+    - name: Write file .conf FortiOS on local disk
+      ansible.builtin.copy:
+        content: "{{ fw_backup.content }}"
+        dest: "{{ playbook_dir }}/../backups/fortinet/{{ inventory_hostname }}.conf"
+      delegate_to: localhost

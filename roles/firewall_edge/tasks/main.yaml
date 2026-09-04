@@ -1,0 +1,75 @@
+---
+- name: Configure L3 to DIST-01 (port2)
+  fortinet.fortios.fortios_system_interface:
+    vdom: "root"
+    state: present
+    system_interface:
+      name: "port2"
+      ip: "10.0.0.2 255.255.255.252"
+      allowaccess: "ping"
+
+- name: Configure L3 to DIST-02 (port3)
+  fortinet.fortios.fortios_system_interface:
+    vdom: "root"
+    state: present
+    system_interface:
+      name: "port3"
+      ip: "10.0.0.6 255.255.255.252"
+      allowaccess: "ping"
+
+- name: Configure OSPF Area 0 on FortiGate
+  fortinet.fortios.fortios_router_ospf:
+    vdom: "root"
+    router_ospf:
+      router_id:  "3.3.3.3"
+      area:
+        - id: "0.0.0.0"
+      network:
+        - id: 1
+          prefix: "10.0.0.0 255.255.255.252"
+          area: "0.0.0.0"
+        - id: 2
+          prefix: "10.0.0.4 255.255.255.252"
+          area: "0.0.0.0"
+      ospf_interface:
+        - name: "port2"
+          interface: "port2"
+        - name: "port3"
+          interface: "port3"
+      default_information_metric: 10
+      default_information_originate: "always"
+
+- name: Configure port4 as WAN Interface to Internet
+  fortinet.fortios.fortios_system_interface:
+    vdom: "root"
+    state: present
+    system_interface:
+      name: "port4"
+      mode: "dhcp"          
+      allowaccess: "ping"
+      type: "physical"
+
+
+- name: Apply permission to access Internet
+  fortinet.fortios.fortios_firewall_policy:
+    vdom: "root"
+    state: present
+    firewall_policy:
+      policyid: 1
+      name: "Campus_to_Internet"
+      srcintf:
+        - name: "port2"
+        - name: "port3"
+      dstintf:
+        - name: "port4"
+      srcaddr:
+        - name: "all"
+      dstaddr:
+        - name: "all"
+      action: "accept"
+      schedule: "always"
+      service:
+        - name: "ALL"
+      nat: "enable"
+
+

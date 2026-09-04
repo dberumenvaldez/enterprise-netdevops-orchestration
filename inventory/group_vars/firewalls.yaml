@@ -1,0 +1,7 @@
+---
+ansible_connection: httpapi
+ansible_network_os: fortinet.fortios.fortios
+ansible_httpapi_use_ssl: no
+ansible_httpapi_port: 80 
+#ansible_httpapi_validate_certs: no
+ansible_fortios_access_token: wxdQ5cb50gsdqp8s0fkx5spgwGh7dN

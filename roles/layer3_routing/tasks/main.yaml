@@ -1,0 +1,87 @@
+---
+- name: Configure IP routing on distribution
+  cisco.ios.ios_config:
+    lines:
+      - ip routing
+  when: inventory_hostname in ['DIST-01','DIST-02']
+
+- name: Assign IP address on physical ports
+  cisco.ios.ios_config:
+    parents: "interface {{ item.name }}"
+    lines:
+      - no switchport
+      - "ip address {{ item.ip }}"
+      - no shutdown
+  loop: "{{ l3_interfaces | default([]) }}"
+  when: 
+    - l3_interfaces is defined
+    - item.is_routed_port | default(false)
+
+- name: Configure Object Tracking to FW-EDGE
+  cisco.ios.ios_config:
+    lines:
+      - "track 1 interface {{ hsrp_track_interface }} line-protocol"
+  when: inventory_hostname == 'DIST-01'   
+
+- name: Assign IP address on SVIs and HSRP
+  cisco.ios.ios_config:
+    parents: "interface {{ item.name }}"
+    lines:
+      - "ip address {{ item.ip }}"
+      - "standby version 2"
+      - "standby {{ item.hsrp_group }} ip {{ item.hsrp_vip }}"
+      - "standby {{ item.hsrp_group }} priority {{ item.hsrp_priority }}"
+      - "standby {{ item.hsrp_group }} preempt"
+      - "{{ 'standby ' ~ item.hsrp_group ~ ' track 1 decrement ' ~ hsrp_track_decrement if hsrp_track_interface != '' else '' }}"
+      - no shutdown
+  loop: "{{ l3_interfaces | selectattr('hsrp_group', 'defined') | list }}"
+  when: 
+    - l3_interfaces is defined
+
+- name: Deploy OSPF Area 0 on Distribution
+  cisco.ios.ios_config:
+    parents: router ospf 1
+    lines:
+      - router-id {{ '1.1.1.1' if inventory_hostname == 'DIST-01' else '2.2.2.2' }}
+      - network {{ '10.0.0.0' if inventory_hostname == 'DIST-01' else '10.0.0.4' }} 0.0.0.3 area 0
+      - network 172.16.10.0 0.0.0.255 area 0
+      - network 172.16.20.0 0.0.0.255 area 0
+      - passive-interface default
+      - no passive-interface GigabitEthernet0/1
+  when: inventory_hostname in ['DIST-01','DIST-02']
+
+- name: Save running-config on startup-config
+  cisco.ios.ios_config:
+    save_when: modified
+
+- name: Excluded IP addresses
+  cisco.ios.ios_config:
+    lines:
+      - ip dhcp excluded-address 172.16.10.1 172.16.10.10
+      - ip dhcp excluded-address 172.16.20.1 172.16.20.10
+  when: inventory_hostname == 'DIST-01'
+
+- name: DCHP pool Vlan 10
+  cisco.ios.ios_config:
+    parents: ip dhcp pool VLAN10
+    lines:
+      - network 172.16.10.0 255.255.255.0
+      - default-router 172.16.10.1 
+      - dns-server 8.8.8.8
+  when: inventory_hostname == 'DIST-01'
+
+- name: DCHP pool Vlan 20
+  cisco.ios.ios_config:
+    parents: ip dhcp pool VLAN20
+    lines:
+      - network 172.16.20.0 255.255.255.0
+      - default-router 172.16.20.1 
+      - dns-server 8.8.8.8
+  when: inventory_hostname == 'DIST-01'
+
+- name: Syslog Server on Docker
+  cisco.ios.ios_config:
+    lines:
+      - logging host 10.10.10.100 transport udp port 514
+      - logging trap informational
+      - logging on
