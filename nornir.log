@@ -64,3 +64,23 @@ nornir.core.exceptions.NornirSubTaskError: Subtask: netmiko_send_command (failed
 
 
 2026-09-08 14:51:25,637 -  nornir.core -     INFO -        run() - Running task 'check_ospf' with args {} on 2 hosts
+2026-09-08 15:07:01,515 -  nornir.core -     INFO -        run() - Running task 'check_ospf' with args {} on 2 hosts
+2026-09-08 15:07:02,383 -  nornir.core -     INFO -        run() - Running task 'check_hsrp' with args {} on 2 hosts
+2026-09-08 15:23:19,395 -  nornir.core -     INFO -        run() - Running task 'check' with args {} on 2 hosts
+2026-09-08 15:23:54,472 -  nornir.core -     INFO -        run() - Running task 'fortigate_telemetry' with args {} on 1 hosts
+2026-09-08 15:23:55,220 - nornir.core.task -    ERROR -      start() - Host 'FW-EDGE': task 'fortigate_telemetry' failed with traceback:
+Traceback (most recent call last):
+  File "/home/david/enterprise-netdevops-orchestration/.venv/lib/python3.12/site-packages/nornir/core/task.py", line 102, in start
+    r = self.task(self, **self.params)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/david/enterprise-netdevops-orchestration/inventory/nornir_fortigate.py", line 26, in fortigate_telemetry
+    task.netmiko_send_command,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Task' object has no attribute 'netmiko_send_command'
+
+2026-09-08 15:25:20,965 -  nornir.core -     INFO -        run() - Running task 'check' with args {} on 2 hosts
+2026-09-08 15:26:01,727 -  nornir.core -     INFO -        run() - Running task 'check' with args {} on 2 hosts
+2026-09-08 15:26:20,775 -  nornir.core -     INFO -        run() - Running task 'fortigate_telemetry' with args {} on 1 hosts
+2026-09-08 15:32:25,154 -  nornir.core -     INFO -        run() - Running task 'fortigate_telemetry' with args {} on 1 hosts
+2026-09-08 15:33:55,579 -  nornir.core -     INFO -        run() - Running task 'fortigate_telemetry' with args {} on 1 hosts
+2026-09-08 17:20:17,218 -  nornir.core -  WARNING -        run() - Task 'check' has not been run – 0 hosts selected

@@ -1,0 +1,4 @@
+2026-09-08 17:20:43,972 -  nornir.core -     INFO -        run() - Running task 'check' with args {} on 2 hosts
+2026-09-08 17:20:55,682 -  nornir.core -  WARNING -        run() - Task 'fortigate_telemetry' has not been run – 0 hosts selected
+2026-09-08 17:20:58,749 -  nornir.core -  WARNING -        run() - Task 'fortigate_telemetry' has not been run – 0 hosts selected
+2026-09-08 17:21:40,885 -  nornir.core -     INFO -        run() - Running task 'fortigate_telemetry' with args {} on 1 hosts
