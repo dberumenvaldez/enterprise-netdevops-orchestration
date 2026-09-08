@@ -50,10 +50,6 @@
       - no passive-interface GigabitEthernet0/1
   when: inventory_hostname in ['DIST-01','DIST-02']
 
-- name: Save running-config on startup-config
-  cisco.ios.ios_config:
-    save_when: modified
-
 - name: Excluded IP addresses
   cisco.ios.ios_config:
     lines:
@@ -85,3 +81,7 @@
       - logging host 10.10.10.100 transport udp port 514
       - logging trap informational
       - logging on
+
+- name: Save running-config on startup-config
+  cisco.ios.ios_config:
+    save_when: modified
