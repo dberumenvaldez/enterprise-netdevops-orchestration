@@ -2,13 +2,13 @@
 
 This project is an Infrastructure as Code (IaC) lab environment designed to automate high-availability deployments on Cisco topologies and centralize network monitoring using a microservices architecture.
 
-![Network Topology](images/topologia.png)
+![Network Topology](images/topology.png)
 
 ## 🛠️ Tech Stack
 
 * **Orchestration & Configuration:** Ansible (Layer 2 & 3 automation).
 * **Network Infrastructure:** Cisco IOS (Simulated on GNS3), OSPF Routing, HSRP with Object Tracking.
-* **Telemetry Processing:** Python 3.12 (UDP Sockets, `pymssql`, RegEx).
+* **Telemetry Processing:** Python 3.12 (UDP Sockets, `pymssql`, RegEx, 'nornir').
 * **Containers & Microservices:** Docker (Ubuntu/Debian-based images).
 * **Persistent Storage:** Microsoft SQL Server 2022 (Docker Volumes, T-SQL).
 
