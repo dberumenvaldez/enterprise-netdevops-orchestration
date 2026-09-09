@@ -3,3 +3,4 @@ __pycache__
 gns3_topology/
 .env
 backups/
+nornir.log
