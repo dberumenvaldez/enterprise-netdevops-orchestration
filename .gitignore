@@ -1,3 +1,5 @@
 .venv/
 __pycache__
 gns3_topology/
+.env
+backups/

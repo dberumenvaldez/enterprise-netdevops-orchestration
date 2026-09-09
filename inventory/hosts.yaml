@@ -23,4 +23,4 @@ all:
         ansible_httpapi_use_ssl: yes
         ansible_httpapi_validate_certs: no
         ansible_httpapi_port: 443
-        fortios_access_token: 737H1r4z7zGsqrpNmf50Nqycfd5ymw   
+        fortios_access_token: "{{ lookup('env', 'FORTIGATE_TOKEN') }}"  

@@ -1,12 +1,17 @@
 import socket
 import pymssql
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 conn = pymssql.connect(server='10.10.20.100', 
                        user='sa', 
-                       password='NetDevOps_2026!', 
+                       password=os.getenv("DB_PASSWORD"), 
                        database='NetworkTelemetry', 
                        autocommit=True)
 cursor = conn.cursor()
+
 
 
 UDP_IP = "0.0.0.0"
@@ -37,7 +42,7 @@ while True:
         category = "INTERFACE_STATE"
     else:
         category = "GENERAL"
-        
+
     # Print on console and save on Sql 
     print(f"Log from {addr[0]}: {message}")
 
